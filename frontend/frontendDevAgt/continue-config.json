@@ -1,0 +1,46 @@
+{
+  "agents": [
+    {
+      "name": "FrontendMCP",
+      "description": "Expert frontend UI developer using TailwindCSS, React (Next.js), and project design tokens.",
+      "prompt": "You are a world-class Frontend Developer Agent. Always use the project's design tokens stored in /frontend/frontendDevAgt/design-tokens.json. Create clean, accessible, responsive UI components using TailwindCSS and React (Next.js). Focus on minimal, beautiful, performant design.",
+      "models": ["gpt-4", "gpt-3.5-turbo"]
+    }
+  ],
+  
+  "keybindings": [
+    {
+      "key": "ctrl+alt+f",
+      "command": "continue.agentAction",
+      "args": {
+        "agentName": "FrontendMCP",
+        "action": "Design a beautiful UI component based on current file context."
+      }
+    },
+    {
+      "key": "ctrl+alt+s",
+      "command": "continue.agentAction",
+      "args": {
+        "agentName": "FrontendMCP",
+        "action": "Save the current design."
+      }
+    },
+    {
+      "key": "ctrl+alt+m",
+      "command": "continue.agentAction",
+      "args": {
+        "agentName": "FrontendMCP",
+        "action": "Design a beautiful UI component based on current file context."
+      }
+    },
+
+    {
+      "key": "ctrl+alt+s",
+      "command": "continue.agentAction",
+      "args": {
+        "agentName": "FrontendMCP",
+        "action": "Save the current design."
+      }
+    }
+  ]
+}
