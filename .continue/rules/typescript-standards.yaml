@@ -1,0 +1,18 @@
+name: TypeScript Standards
+version: 0.0.1
+rules:
+  - >-
+    - Use TypeScript for all new code
+
+    - Define proper interfaces and types for components, functions, and data
+    structures
+
+    - Avoid using 'any' type whenever possible
+
+    - Use proper typing for React props, hooks, and state
+
+    - Follow TypeScript best practices for type safety
+
+    - Use type inference when appropriate
+
+    - Create reusable types in separate files when needed

@@ -1,0 +1,45 @@
+PROJECT STRUCTURE: PromptPlay Frontend
+
+/frontend
+├── app/                  # Next.js App Router components
+├── pages/                # Next.js Pages Router components
+├── components/           # Reusable UI components
+│   └── ui/               # UI-specific components
+├── public/               # Static assets (images, fonts)
+├── frontendDevAgt/       # Frontend Developer Agent configuration
+│   ├── design-tokens.json      # Design System Tokens
+│   ├── continue-config.json    # MCP Agent Config
+│   └── tokens/                 # Source token files
+│       └── minimal-tokens.json # Minimal token example
+├── styles/               # Global and component-specific styles
+├── tailwind.config.js    # Tailwind CSS configuration - extends theme with design tokens
+├── style-dictionary.config.js  # Style Dictionary configuration for token processing
+├── next.config.js        # Next.js configuration
+├── package.json          # Project dependencies and scripts
+└── tsconfig.json         # TypeScript configuration
+
+CONFIGURATION DETAILS:
+
+1. Design Token System:
+   - Source tokens defined in JSON format
+   - Processed by Style Dictionary into usable formats
+   - Integrated with Tailwind CSS for consistent styling
+
+2. Frontend MCP Agent:
+   - AI-assisted development through Continue VSCode extension
+   - Custom prompt focused on following design system
+   - Keyboard shortcut (ctrl+alt+f) to trigger assistance
+
+3. Package Integration:
+   - Next.js for React framework
+   - TailwindCSS for styling
+   - TypeScript for type safety
+   - Framer Motion for animations
+   - Compatible with UI libraries (ShadCN UI, Material UI, etc.)
+
+DEVELOPMENT WORKFLOW:
+1. Design tokens defined in JSON format
+2. Style Dictionary processes tokens into various formats
+3. Tailwind CSS uses tokens for consistent styling
+4. Components built with React/Next.js using token-based Tailwind classes
+5. AI assistant (FrontendMCP) helps generate UI components following design system

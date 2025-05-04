@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400">
+  <!-- Background -->
+  <rect width="1000" height="1400" fill="#1a1a1a"/>
+  
+  <!-- Main Container -->
+  <rect x="25" y="25" width="950" height="1350" fill="none" stroke="#ffffff" stroke-width="2" rx="10"/>
+  <text x="500" y="60" font-family="Arial" font-size="24" fill="white" text-anchor="middle">Enhanced AI Scriptwriting Platform Workflow</text>
+  
+  <!-- AI AGENTS SECTION -->
+  <rect x="50" y="90" width="900" height="300" fill="#332244" opacity="0.7" rx="10"/>
+  <text x="90" y="120" font-family="Arial" font-size="16" fill="white">
+    <tspan x="90" y="120" font-weight="bold">AI AGENTS</tspan>
+  </text>
+  
+  <!-- Original Agents -->
+  <rect x="100" y="140" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="160" y="180" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Critique Agent</text>
+  
+  <rect x="240" y="140" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="300" y="180" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Rewrite Agent</text>
+  
+  <rect x="380" y="140" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="180" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Prompt Engineer</text>
+  
+  <rect x="100" y="240" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="160" y="280" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Visual Director</text>
+  
+  <rect x="240" y="240" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="300" y="280" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Screenwriter</text>
+  
+  <rect x="380" y="240" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="280" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Character Agent</text>
+  
+  <!-- New Agents -->
+  <rect x="520" y="140" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="580" y="180" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Dialogue Specialist</text>
+  
+  <rect x="660" y="140" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="720" y="165" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Format</text>
+  <text x="720" y="185" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Compliance</text>
+  <text x="720" y="205" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Agent</text>
+  
+  <rect x="780" y="240" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="840" y="280" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Research Agent</text>
+  
+  <!-- CORE FEATURES SECTION -->
+  <rect x="50" y="410" width="900" height="400" fill="#225533" opacity="0.7" rx="10"/>
+  <text x="90" y="440" font-family="Arial" font-size="16" fill="white">
+    <tspan x="90" y="440" font-weight="bold">CORE FEATURES</tspan>
+  </text>
+  
+  <!-- Original Features -->
+  <rect x="100" y="460" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="160" y="490" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Visual</text>
+  <text x="160" y="510" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Moodboard</text>
+  
+  <rect x="240" y="460" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="300" y="490" font-family="Arial" font-size="14" fill="white" text-anchor="middle">AI Script</text>
+  <text x="300" y="510" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Engine</text>
+  
+  <rect x="380" y="460" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="490" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Character</text>
+  <text x="440" y="510" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Development</text>
+  
+  <rect x="520" y="460" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="580" y="490" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Prompt</text>
+  <text x="580" y="510" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Customization</text>
+  
+  <!-- New Features -->
+  <rect x="660" y="460" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="720" y="490" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Scene</text>
+  <text x="720" y="510" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Visualization</text>
+  
+  <rect x="780" y="460" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="840" y="490" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Script</text>
+  <text x="840" y="510" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Analytics</text>
+  
+  <rect x="100" y="560" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="160" y="590" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Audience</text>
+  <text x="160" y="610" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Feedback Sim</text>
+  
+  <rect x="240" y="560" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="300" y="590" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Learning</text>
+  <text x="300" y="610" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Mode</text>
+  
+  <!-- Central Feature -->
+  <rect x="380" y="560" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="590" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Scene</text>
+  <text x="440" y="610" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Breakdown</text>
+  
+  <rect x="520" y="560" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="580" y="590" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Project</text>
+  <text x="580" y="610" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Management</text>
+  
+  <!-- Output Options -->
+  <rect x="100" y="680" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="160" y="720" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Save and Export</text>
+  
+  <rect x="240" y="680" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="300" y="720" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Multilingual Support</text>
+  
+  <rect x="380" y="680" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="720" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Collaboration Mode</text>
+  
+  <rect x="520" y="680" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="580" y="720" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Revision Mode</text>
+  
+  <rect x="660" y="680" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="720" y="720" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Feedback Loop</text>
+  
+  <!-- USER ACTIONS SECTION -->
+  <rect x="50" y="830" width="900" height="300" fill="#223355" opacity="0.7" rx="10"/>
+  <text x="90" y="860" font-family="Arial" font-size="16" fill="white">
+    <tspan x="90" y="860" font-weight="bold">USER ACTIONS</tspan>
+  </text>
+  
+  <!-- Original Actions -->
+  <rect x="100" y="880" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="160" y="920" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Generate Script</text>
+  
+  <rect x="240" y="880" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="300" y="920" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Save or Export</text>
+  
+  <rect x="380" y="880" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="910" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Sign Up or</text>
+  <text x="440" y="930" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Log In</text>
+  
+  <rect x="520" y="880" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="580" y="920" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Invite Collaborators</text>
+  
+  <!-- New Actions -->
+  <rect x="660" y="880" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="720" y="920" font-family="Arial" font-size="14" fill="white" text-anchor="middle">View Analytics</text>
+  
+  <rect x="100" y="980" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="160" y="1010" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Play or</text>
+  <text x="160" y="1030" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Download Audio</text>
+  
+  <rect x="240" y="980" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="300" y="1020" font-family="Arial" font-size="14" fill="white" text-anchor="middle">New Script</text>
+  
+  <rect x="380" y="980" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="1020" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Customize Prompt</text>
+  
+  <rect x="520" y="980" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="580" y="1010" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Create</text>
+  <text x="580" y="1030" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Storyboard</text>
+  
+  <!-- INTEGRATIONS SECTION -->
+  <rect x="50" y="1150" width="900" height="200" fill="#664422" opacity="0.7" rx="10"/>
+  <text x="90" y="1180" font-family="Arial" font-size="16" fill="white">
+    <tspan x="90" y="1180" font-weight="bold">INTEGRATIONS</tspan>
+  </text>
+  
+  <!-- Original Integrations -->
+  <rect x="100" y="1200" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="160" y="1230" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Visual</text>
+  <text x="160" y="1250" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Moodboard</text>
+  
+  <rect x="240" y="1200" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="300" y="1230" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Screenplay</text>
+  <text x="300" y="1250" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Parsing</text>
+  
+  <rect x="380" y="1200" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="440" y="1230" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Text to Speech</text>
+  <text x="440" y="1250" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Integration</text>
+  
+  <rect x="520" y="1200" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5"/>
+  <text x="580" y="1230" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Payment</text>
+  <text x="580" y="1250" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Gateway</text>
+  
+  <!-- New Integrations -->
+  <rect x="660" y="1200" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="720" y="1230" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Production</text>
+  <text x="720" y="1250" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Budget Tools</text>
+  
+  <rect x="780" y="1200" width="120" height="80" fill="#222222" stroke="#ffffff" stroke-width="1" rx="5" stroke-dasharray="5,5"/>
+  <text x="840" y="1230" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Casting</text>
+  <text x="840" y="1250" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Directory</text>
+  
+  <!-- Connection Lines -->
+  <!-- Too many to draw individually but indicating key connections -->
+  <!-- Vertical lines from agents to features -->
+  <line x1="160" y1="320" x2="160" y2="460" stroke="#ffffff" stroke-width="1"/>
+  <line x1="300" y1="320" x2="300" y2="460" stroke="#ffffff" stroke-width="1"/>
+  <line x1="440" y1="320" x2="440" y2="460" stroke="#ffffff" stroke-width="1"/>
+  <line x1="580" y1="220" x2="580" y2="460" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="720" y1="220" x2="720" y2="460" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="840" y1="320" x2="840" y2="460" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Central lines connecting sections -->
+  <line x1="440" y1="640" x2="440" y2="680" stroke="#ffffff" stroke-width="1"/>
+  <line x1="300" y1="760" x2="300" y2="880" stroke="#ffffff" stroke-width="1"/>
+  <line x1="440" y1="760" x2="440" y2="880" stroke="#ffffff" stroke-width="1"/>
+  <line x1="580" y1="760" x2="580" y2="880" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Lines to integrations -->
+  <line x1="160" y1="1060" x2="160" y2="1200" stroke="#ffffff" stroke-width="1"/>
+  <line x1="300" y1="1060" x2="300" y2="1200" stroke="#ffffff" stroke-width="1"/>
+  <line x1="440" y1="1060" x2="440" y2="1200" stroke="#ffffff" stroke-width="1"/>
+  <line x1="580" y1="1060" x2="580" y2="1200" stroke="#ffffff" stroke-width="1"/>
+  <line x1="720" y1="1060" x2="720" y2="1200" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Legend -->
+  <rect x="780" y="1300" width="20" height="10" fill="none" stroke="#ffffff" stroke-width="1"/>
+  <text x="810" y="1310" font-family="Arial" font-size="12" fill="white">Existing Component</text>
+  
+  <rect x="780" y="1320" width="20" height="10" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="5,5"/>
+  <text x="810" y="1330" font-family="Arial" font-size="12" fill="white">New Component</text>
+</svg>

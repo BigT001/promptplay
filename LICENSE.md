@@ -3,8 +3,6 @@
 
 # 📄 LICENSE.md
 
-Since you mentioned it’s proprietary, here’s a sample **custom license** that you can tweak:
-
 ```markdown
 # PromptPlay License
 

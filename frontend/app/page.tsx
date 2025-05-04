@@ -1,14 +1,13 @@
-import HeroSection from '@/components/HeroSection'
-import NavBar from '@/components/NavBar'
-import React from 'react'
+import HeroSection from "@/components/hero-section"
+import NavBar from "@/components/nav-bar"
+import Footer from "@/components/footer"
 
-const HomePage = () => {
+export default function Home() {
   return (
-    <div className="bg-background text-textPrimary">
+    <main className="min-h-screen flex flex-col">
       <NavBar />
       <HeroSection />
-    </div>
+      <Footer />
+    </main>
   )
 }
-
-export default HomePage

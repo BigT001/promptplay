@@ -1,0 +1,19 @@
+name: Styling Standards
+version: 0.0.1
+rules:
+  - >-
+    - Use Tailwind CSS for styling components
+
+    - Follow the design token system defined in
+    frontendDevAgt/design-tokens.json
+
+    - Utilize Style Dictionary processed tokens via the Tailwind configuration
+
+    - Maintain consistent spacing, colors, and typography as defined in the
+    design system
+
+    - Use Framer Motion for animations when needed
+
+    - Keep styles modular and component-based
+
+    - Ensure responsive design for all components

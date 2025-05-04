@@ -1,0 +1,19 @@
+name: Project Structure Standards
+version: 0.0.1
+rules:
+  - >-
+    - Place page components in the app/ directory following Next.js App Router
+    conventions
+
+    - Place reusable UI components in the components/ directory
+
+    - UI-specific components should go in components/ui/
+
+    - Keep static assets in the public/ directory
+
+    - Follow the project structure outlined in system-structure.txt
+
+    - Maintain separation of concerns between UI components and business logic
+
+    - Use proper imports with relative paths or aliases as defined in
+    tsconfig.json

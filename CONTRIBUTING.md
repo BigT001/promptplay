@@ -16,4 +16,41 @@ We are excited to have you as part of our creative and developer community.
 1. **Fork** the repository.
 2. **Create** a new branch:
    ```bash
-   git checkout -b feature/your-feature-name
+   Commit your changes:
+
+
+git commit -m "Add a detailed message describing your change"
+Push your branch:
+
+bash
+Copy
+Edit
+git push origin feature/your-feature-name
+Open a Pull Request.
+
+Guidelines
+Write clear, concise commit messages.
+
+Follow existing code style and formatting.
+
+Include comments and documentation where necessary.
+
+Test your changes thoroughly before submitting.
+
+Be respectful and constructive in all communications.
+
+Reporting Issues
+Please use the Issues section to report bugs or request features.
+When filing an issue, please include:
+
+A clear, descriptive title
+
+A detailed description of the problem or suggestion
+
+Steps to reproduce (for bugs)
+
+Code of Conduct
+PromptPlay expects all contributors to adhere to our Code of Conduct.
+Let's create a welcoming and inclusive environment for everyone!
+
+---

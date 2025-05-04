@@ -1,0 +1,11 @@
+name: Next.js and React Standards
+version: 0.0.1
+rules:
+  - |-
+    - Use Next.js App Router architecture for new components and pages
+    - Create React components using TypeScript (.tsx extension)
+    - Use PascalCase for component file names (e.g., Button.tsx, not button.tsx)
+    - Prefer named exports for components
+    - Use client/server directive comments appropriately
+    - Follow React best practices for hooks and component structure
+    - Implement proper TypeScript types for all props and state
