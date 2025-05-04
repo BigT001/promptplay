@@ -23,6 +23,16 @@ interface ScriptSuggestion {
   context?: string
 }
 
+interface CharacterBackground {
+  name: string
+  role?: string
+  description?: string
+  personality?: string
+  goals?: string
+}
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+
 export class AIScriptEngine {
   private config: AIEngineConfig
 
@@ -30,14 +40,13 @@ export class AIScriptEngine {
     this.config = {
       maxTokens: config.maxTokens || 2000,
       temperature: config.temperature || 0.7,
-      model: config.model || 'gpt-4'
+      model: config.model || 'llama2'
     }
   }
 
   async generateScript({ prompt, context, genre, style, constraints = [] }: ScriptGeneration) {
     try {
-      // Here we'll integrate with actual AI service
-      const response = await fetch('/api/ai/generate', {
+      const response = await fetch(`${BACKEND_URL}/ai/generate-script`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +74,7 @@ export class AIScriptEngine {
 
   async analyzeScript({ content, aspectsToAnalyze }: ScriptAnalysis) {
     try {
-      const response = await fetch('/api/ai/analyze', {
+      const response = await fetch(`${BACKEND_URL}/ai/analyze-script`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,9 +97,30 @@ export class AIScriptEngine {
     }
   }
 
+  async generateCharacterBackground(character: CharacterBackground) {
+    try {
+      const response = await fetch(`${BACKEND_URL}/ai/generate-background`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(character),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate character background')
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('Error in generateCharacterBackground:', error)
+      throw error
+    }
+  }
+
   async getSuggestions({ content, targetAspect, context }: ScriptSuggestion) {
     try {
-      const response = await fetch('/api/ai/suggest', {
+      const response = await fetch(`${BACKEND_URL}/ai/suggest`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,34 +144,9 @@ export class AIScriptEngine {
     }
   }
 
-  async improveSentiment(content: string, targetSentiment: 'positive' | 'negative' | 'neutral') {
-    try {
-      const response = await fetch('/api/ai/sentiment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content,
-          targetSentiment,
-          config: this.config,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to improve sentiment')
-      }
-
-      return await response.json()
-    } catch (error) {
-      console.error('Error in improveSentiment:', error)
-      throw error
-    }
-  }
-
   async generateCharacterDialogue(character: string, context: string, prompt: string) {
     try {
-      const response = await fetch('/api/ai/dialogue', {
+      const response = await fetch(`${BACKEND_URL}/ai/dialogue`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

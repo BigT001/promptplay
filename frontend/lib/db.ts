@@ -106,14 +106,14 @@ export async function updateUser(id: number, data: { name?: string; bio?: string
     if (updates.length === 0) return null
 
     values.push(id)
-    const query = `
+    const queryText = `
       UPDATE users 
       SET ${updates.join(", ")}, updated_at = NOW()
       WHERE id = $${paramCount}
       RETURNING *
     `
 
-    const result = await query(query, values)
+    const result = await query(queryText, values)
     return result.rows[0]
   } catch (error) {
     console.error("Error in updateUser:", error)
@@ -262,4 +262,122 @@ export async function logUserActivity(userId: number, activityType: string, deta
     JSON.stringify(details),
     ipAddress,
   ])
+}
+
+// Character-related database functions
+export async function getCharactersByProject(projectId: number) {
+  try {
+    const result = await query(
+      "SELECT * FROM characters WHERE project_id = $1 ORDER BY created_at DESC",
+      [projectId]
+    )
+    return result.rows
+  } catch (error) {
+    console.error("Error in getCharactersByProject:", error)
+    throw error
+  }
+}
+
+export async function getCharacterById(id: number) {
+  try {
+    const result = await query("SELECT * FROM characters WHERE id = $1", [id])
+    return result.rows[0]
+  } catch (error) {
+    console.error("Error in getCharacterById:", error)
+    throw error
+  }
+}
+
+export async function createCharacter(
+  projectId: number,
+  { name, role, description, background, personality, goals }: {
+    name: string
+    role?: string
+    description?: string
+    background?: string
+    personality?: string
+    goals?: string
+  }
+) {
+  try {
+    const result = await query(
+      `INSERT INTO characters 
+      (project_id, name, role, description, background, personality, goals)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *`,
+      [projectId, name, role, description, background, personality, goals]
+    )
+    return result.rows[0]
+  } catch (error) {
+    console.error("Error in createCharacter:", error)
+    throw error
+  }
+}
+
+export async function updateCharacter(
+  id: number,
+  { name, role, description, background, personality, goals }: {
+    name?: string
+    role?: string
+    description?: string
+    background?: string
+    personality?: string
+    goals?: string
+  }
+) {
+  try {
+    const updates: string[] = []
+    const values: any[] = []
+    let paramCount = 1
+
+    if (name !== undefined) {
+      updates.push(`name = $${paramCount}`)
+      values.push(name)
+      paramCount++
+    }
+    if (role !== undefined) {
+      updates.push(`role = $${paramCount}`)
+      values.push(role)
+      paramCount++
+    }
+    if (description !== undefined) {
+      updates.push(`description = $${paramCount}`)
+      values.push(description)
+      paramCount++
+    }
+    if (background !== undefined) {
+      updates.push(`background = $${paramCount}`)
+      values.push(background)
+      paramCount++
+    }
+    if (personality !== undefined) {
+      updates.push(`personality = $${paramCount}`)
+      values.push(personality)
+      paramCount++
+    }
+    if (goals !== undefined) {
+      updates.push(`goals = $${paramCount}`)
+      values.push(goals)
+      paramCount++
+    }
+
+    if (updates.length === 0) return null
+
+    values.push(id)
+    const queryText = `UPDATE characters SET ${updates.join(", ")} WHERE id = $${paramCount} RETURNING *`
+    const result = await query(queryText, values)
+    return result.rows[0]
+  } catch (error) {
+    console.error("Error in updateCharacter:", error)
+    throw error
+  }
+}
+
+export async function deleteCharacter(id: number) {
+  try {
+    await query("DELETE FROM characters WHERE id = $1", [id])
+  } catch (error) {
+    console.error("Error in deleteCharacter:", error)
+    throw error
+  }
 }

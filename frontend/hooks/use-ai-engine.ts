@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { AIScriptEngine } from "@/lib/ai-engine"
 import { useToast } from "@/components/ui/use-toast"
@@ -79,6 +81,17 @@ export function useAIEngine(config = defaultConfig) {
     }
   }
 
+  const generateCharacterBackground = async (...args: Parameters<typeof engine.generateCharacterBackground>) => {
+    try {
+      setLoading(true)
+      const result = await engine.generateCharacterBackground(...args)
+      setLoading(false)
+      return result
+    } catch (error) {
+      handleError(error, "generate character background")
+    }
+  }
+
   return {
     loading,
     generateScript,
@@ -86,5 +99,6 @@ export function useAIEngine(config = defaultConfig) {
     getSuggestions,
     improveSentiment,
     generateCharacterDialogue,
+    generateCharacterBackground,
   }
 }

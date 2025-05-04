@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { useToast } from "@/components/ui/use-toast"
+import { useAIEngine } from "@/hooks/use-ai-engine"
 
 interface Character {
   id: number
@@ -17,15 +18,17 @@ export function useCharacter(projectId: number) {
   const [characters, setCharacters] = useState<Character[]>([])
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
+  const ai = useAIEngine()
 
   const fetchCharacters = useCallback(async () => {
     setLoading(true)
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch(`/api/projects/${projectId}/characters`)
-      // const data = await response.json()
-      // setCharacters(data)
-      setCharacters([]) // Temporary
+      const response = await fetch(`/api/projects/${projectId}/characters`)
+      if (!response.ok) {
+        throw new Error("Failed to fetch characters")
+      }
+      const data = await response.json()
+      setCharacters(data)
     } catch (error) {
       toast({
         title: "Error",
@@ -41,21 +44,18 @@ export function useCharacter(projectId: number) {
     async (data: Omit<Character, "id">) => {
       setLoading(true)
       try {
-        // TODO: Replace with actual API call
-        // const response = await fetch(`/api/projects/${projectId}/characters`, {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(data),
-        // })
-        // const newCharacter = await response.json()
-        // setCharacters(prev => [...prev, newCharacter])
+        const response = await fetch(`/api/projects/${projectId}/characters`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        })
 
-        // Temporary mock implementation
-        const newCharacter = {
-          id: Math.random(),
-          ...data,
+        if (!response.ok) {
+          throw new Error("Failed to create character")
         }
-        setCharacters(prev => [...prev, newCharacter])
+
+        const newCharacter = await response.json()
+        setCharacters((prev) => [...prev, newCharacter])
 
         toast({
           title: "Success",
@@ -79,20 +79,18 @@ export function useCharacter(projectId: number) {
     async (id: number, data: Partial<Character>) => {
       setLoading(true)
       try {
-        // TODO: Replace with actual API call
-        // const response = await fetch(`/api/projects/${projectId}/characters/${id}`, {
-        //   method: "PATCH",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(data),
-        // })
-        // const updatedCharacter = await response.json()
+        const response = await fetch(`/api/projects/${projectId}/characters/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        })
 
-        // Temporary mock implementation
-        const updatedCharacter = {
-          ...characters.find(c => c.id === id)!,
-          ...data,
+        if (!response.ok) {
+          throw new Error("Failed to update character")
         }
-        setCharacters(prev => prev.map(c => (c.id === id ? updatedCharacter : c)))
+
+        const updatedCharacter = await response.json()
+        setCharacters((prev) => prev.map((c) => (c.id === id ? updatedCharacter : c)))
 
         toast({
           title: "Success",
@@ -109,20 +107,22 @@ export function useCharacter(projectId: number) {
         setLoading(false)
       }
     },
-    [characters, toast]
+    [projectId, toast]
   )
 
   const deleteCharacter = useCallback(
     async (id: number) => {
       setLoading(true)
       try {
-        // TODO: Replace with actual API call
-        // await fetch(`/api/projects/${projectId}/characters/${id}`, {
-        //   method: "DELETE",
-        // })
+        const response = await fetch(`/api/projects/${projectId}/characters/${id}`, {
+          method: "DELETE",
+        })
 
-        // Temporary mock implementation
-        setCharacters(prev => prev.filter(c => c.id !== id))
+        if (!response.ok) {
+          throw new Error("Failed to delete character")
+        }
+
+        setCharacters((prev) => prev.filter((c) => c.id !== id))
 
         toast({
           title: "Success",
@@ -139,30 +139,15 @@ export function useCharacter(projectId: number) {
         setLoading(false)
       }
     },
-    [toast]
+    [projectId, toast]
   )
 
   const generateCharacterBackground = useCallback(
     async (character: Character) => {
       setLoading(true)
       try {
-        // TODO: Replace with actual API call to AI service
-        // const response = await fetch(`/api/ai/generate-background`, {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify({
-        //     name: character.name,
-        //     role: character.role,
-        //     description: character.description,
-        //     personality: character.personality,
-        //     goals: character.goals,
-        //   }),
-        // })
-        // const { background } = await response.json()
-
-        // Temporary mock implementation
-        const background = `Generated background for ${character.name}...`
-        await updateCharacter(character.id, { background })
+        const result = await ai.generateCharacterBackground(character)
+        await updateCharacter(character.id, { background: result.background })
 
         toast({
           title: "Success",
@@ -178,7 +163,7 @@ export function useCharacter(projectId: number) {
         setLoading(false)
       }
     },
-    [updateCharacter, toast]
+    [updateCharacter, ai, toast]
   )
 
   return {
