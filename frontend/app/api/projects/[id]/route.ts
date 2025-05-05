@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentSession } from "@/lib/auth"
 import { getProjectById, updateProject, logUserActivity } from "@/lib/db"
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { projectId: string } }) {
   try {
     const session = await getCurrentSession()
 
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const projectId = Number.parseInt(params.id)
+    const projectId = Number.parseInt(params.projectId)
 
     if (isNaN(projectId)) {
       return NextResponse.json({ error: "Invalid project ID" }, { status: 400 })
@@ -26,12 +26,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     return NextResponse.json(project)
   } catch (error: any) {
     console.error("Project error:", error)
-
     return NextResponse.json({ error: error.message || "Failed to get project" }, { status: 500 })
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: { projectId: string } }) {
   try {
     const session = await getCurrentSession()
 
@@ -39,7 +38,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const projectId = Number.parseInt(params.id)
+    const projectId = Number.parseInt(params.projectId)
 
     if (isNaN(projectId)) {
       return NextResponse.json({ error: "Invalid project ID" }, { status: 400 })
@@ -74,7 +73,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     })
   } catch (error: any) {
     console.error("Project update error:", error)
-
     return NextResponse.json({ error: error.message || "Failed to update project" }, { status: 500 })
   }
 }

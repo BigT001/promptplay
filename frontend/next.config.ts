@@ -1,9 +1,12 @@
-import type { NextConfig } from "next";
+import { NextConfig } from 'next'
 
-const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-  optimizeFonts: true
-};
+const config: NextConfig = {
+  experimental: {
+    serverActions: true,
+  },
+  images: {
+    domains: ['localhost'],
+  },
+}
 
-export default nextConfig;
+export default config
