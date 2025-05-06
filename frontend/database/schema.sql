@@ -37,6 +37,21 @@ CREATE TABLE IF NOT EXISTS projects (
 );
 
 -- AI Suggestions Table
+/**
+ * Stores AI-generated suggestions for a specific project.
+ * 
+ * This table tracks suggestions from AI systems, including their type, 
+ * content, current status, and implementation state.
+ * 
+ * @table ai_suggestions
+ * @field id Unique identifier for the suggestion
+ * @field project_id Foreign key referencing the associated project
+ * @field suggestion_type Categorization of the AI suggestion (e.g., 'plot', 'character', 'dialogue')
+ * @field content Detailed text of the AI-generated suggestion
+ * @field status Current processing status of the suggestion (default: 'pending')
+ * @field implemented Boolean flag indicating whether the suggestion has been used
+ * @field created_at Timestamp of when the suggestion was generated
+ */
 CREATE TABLE IF NOT EXISTS ai_suggestions (
     id SERIAL PRIMARY KEY,
     project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,

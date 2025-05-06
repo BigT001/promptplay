@@ -26,7 +26,7 @@ export default function Dashboard() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loadingProjects, setLoadingProjects] = useState(true)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuth() as { user: { name?: string; image?: string } | null; logout: () => void }
   const router = useRouter()
   const { toast } = useToast()
 
@@ -94,7 +94,7 @@ export default function Dashboard() {
               {user?.image ? (
                 <img
                   src={user.image}
-                  alt={user?.name || "User"}
+                  alt={user.name || "User"}
                   className="w-full h-full rounded-full"
                 />
               ) : (

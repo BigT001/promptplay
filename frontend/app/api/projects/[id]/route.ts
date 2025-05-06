@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentSession } from "@/lib/auth"
 import { getProjectById, updateProject, logUserActivity } from "@/lib/db"
 
-export async function GET(request: NextRequest, { params }: { params: { projectId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await getCurrentSession()
 
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, { params }: { params: { projectI
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const projectId = Number.parseInt(params.projectId)
+    const projectId = Number.parseInt(params.id)
 
     if (isNaN(projectId)) {
       return NextResponse.json({ error: "Invalid project ID" }, { status: 400 })
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: { projectI
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { projectId: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await getCurrentSession()
 
@@ -38,7 +38,7 @@ export async function PUT(request: NextRequest, { params }: { params: { projectI
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const projectId = Number.parseInt(params.projectId)
+    const projectId = Number.parseInt(params.id)
 
     if (isNaN(projectId)) {
       return NextResponse.json({ error: "Invalid project ID" }, { status: 400 })
@@ -64,7 +64,7 @@ export async function PUT(request: NextRequest, { params }: { params: { projectI
       session.user_id,
       "project_update",
       { project_id: projectId, fields: Object.keys(body) },
-      request.headers.get("x-forwarded-for") || undefined,
+      request.headers.get("x-forwarded-for") || undefined
     )
 
     return NextResponse.json({

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
@@ -14,6 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Progress } from "@/components/ui/progress"
 import { characterSchema, type CharacterFormData } from "@/lib/character-schema"
 
 interface CharacterDevelopmentProps {
@@ -25,12 +27,12 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(null)
   const {
     characters,
-    loading,
+    status: { isLoading, error, aiStatus },
     fetchCharacters,
     createCharacter,
     updateCharacter,
     deleteCharacter,
-    generateCharacterBackground,
+    generateBackground,
   } = useCharacter(projectId)
 
   const form = useForm<z.infer<typeof characterSchema>>({
@@ -59,6 +61,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
       }
       setActiveTab("list")
     } catch (error) {
+      // Error handling is now managed by the useCharacter hook
       console.error("Form submission error:", error)
     }
   }
@@ -83,7 +86,12 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
   }
 
   const handleGenerateBackground = async (character: any) => {
-    await generateCharacterBackground(character)
+    try {
+      await generateBackground(character)
+    } catch (error) {
+      // Error handling is now managed by the useCharacter hook
+      console.error("Background generation error:", error)
+    }
   }
 
   return (
@@ -93,6 +101,13 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
         <CardDescription>Create and manage your story's characters</CardDescription>
       </CardHeader>
       <CardContent>
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircleIcon className="h-4 w-4" />
+            <AlertDescription>{error.message}</AlertDescription>
+          </Alert>
+        )}
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="list">Characters</TabsTrigger>
@@ -101,18 +116,24 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
 
           <TabsContent value="list">
             <div className="space-y-4">
-              <Button onClick={() => { setSelectedCharacter(null); setActiveTab("edit") }}>
+              <Button 
+                onClick={() => { setSelectedCharacter(null); setActiveTab("edit") }}
+                disabled={isLoading}
+              >
                 <PlusIcon className="w-4 h-4 mr-2" />
                 Add Character
               </Button>
 
-              {loading && (
-                <div className="flex items-center justify-center p-4">
-                  <LoaderIcon className="w-6 h-6 animate-spin" />
+              {isLoading && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center p-4">
+                    <LoaderIcon className="w-6 h-6 animate-spin" />
+                  </div>
+                  <Progress value={30} className="w-full" />
                 </div>
               )}
 
-              {!loading && characters.length === 0 && (
+              {!isLoading && characters.length === 0 && (
                 <Alert>
                   <AlertCircleIcon className="h-4 w-4" />
                   <AlertDescription>
@@ -164,21 +185,32 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                           )}
 
                           <div className="flex space-x-2">
-                            <Button variant="outline" size="sm" onClick={() => handleEdit(character)}>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => handleEdit(character)}
+                              disabled={isLoading}
+                            >
                               Edit
                             </Button>
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => handleGenerateBackground(character)}
+                              disabled={isLoading || aiStatus?.isGenerating}
                             >
-                              <RefreshIcon className="w-4 h-4 mr-2" />
+                              {aiStatus?.isGenerating ? (
+                                <LoaderIcon className="w-4 h-4 mr-2 animate-spin" />
+                              ) : (
+                                <RefreshIcon className="w-4 h-4 mr-2" />
+                              )}
                               Generate Background
                             </Button>
                             <Button
                               variant="destructive"
                               size="sm"
                               onClick={() => handleDelete(character.id)}
+                              disabled={isLoading}
                             >
                               <TrashIcon className="w-4 h-4 mr-2" />
                               Delete
@@ -203,7 +235,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} disabled={isLoading} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -217,7 +249,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                     <FormItem>
                       <FormLabel>Role</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} disabled={isLoading} />
                       </FormControl>
                       <FormDescription>The character's role in the story</FormDescription>
                       <FormMessage />
@@ -232,7 +264,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea {...field} disabled={isLoading} />
                       </FormControl>
                       <FormDescription>Physical and other notable characteristics</FormDescription>
                       <FormMessage />
@@ -247,7 +279,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                     <FormItem>
                       <FormLabel>Personality</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea {...field} disabled={isLoading} />
                       </FormControl>
                       <FormDescription>Character traits and behaviors</FormDescription>
                       <FormMessage />
@@ -262,7 +294,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                     <FormItem>
                       <FormLabel>Goals</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea {...field} disabled={isLoading} />
                       </FormControl>
                       <FormDescription>Character's motivations and objectives</FormDescription>
                       <FormMessage />
@@ -277,7 +309,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                     <FormItem>
                       <FormLabel>Background</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea {...field} disabled={isLoading} />
                       </FormControl>
                       <FormDescription>Character's history and backstory</FormDescription>
                       <FormMessage />
@@ -286,8 +318,8 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                 />
 
                 <div className="flex space-x-2">
-                  <Button type="submit" disabled={loading}>
-                    {loading && <LoaderIcon className="w-4 h-4 mr-2 animate-spin" />}
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading && <LoaderIcon className="w-4 h-4 mr-2 animate-spin" />}
                     {selectedCharacter ? "Update" : "Create"} Character
                   </Button>
                   <Button
@@ -298,6 +330,7 @@ export function CharacterDevelopment({ projectId }: CharacterDevelopmentProps) {
                       form.reset()
                       setActiveTab("list")
                     }}
+                    disabled={isLoading}
                   >
                     Cancel
                   </Button>

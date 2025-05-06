@@ -7,18 +7,7 @@
 
 ## Step-by-Step Setup
 
-### 1. Remove Existing Environment (if any)
-```powershell
-# If you have an existing environment, remove it
-rm -r backend-env    # Windows PowerShell
-# OR
-rmdir /s /q backend-env    # Windows CMD
-```
-
-### 2. Create Fresh Virtual Environment
-Navigate to the project root directory and create a new virtual environment:
-```powershell
-cd C:\Users\hp\Desktop\promptplay
+|\promptplay
 python -m venv backend-env
 ```
 
@@ -62,7 +51,9 @@ If Python/pip is not found, add Python to your PATH:
 1. Open System Properties
 2. Click "Environment Variables"
 3. Add Python paths to System PATH:
-   - C:\Users\[Username]\AppData\Local\Programs\Python\Python3x
+   - C:\Users\hp\AppData\Local\Programs\Python\Python313\python.exe
+
+
    - C:\Users\[Username]\AppData\Local\Programs\Python\Python3x\Scripts
 
 ### 3. pip Installation

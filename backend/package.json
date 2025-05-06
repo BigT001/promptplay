@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "python app/main.py",
+    "dev": "python -m uvicorn app.main:app --reload",
+    "test": "pytest; flake8",
+    "format": "black .; isort .",
+    "lint": "mypy .; pylint app"
+  }
+}

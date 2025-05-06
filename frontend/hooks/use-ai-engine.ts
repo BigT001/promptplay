@@ -1,104 +1,170 @@
 "use client"
 
-import { useState } from "react"
-import { AIScriptEngine } from "@/lib/ai-engine"
+import { useState, useRef } from "react"
 import { useToast } from "@/components/ui/use-toast"
+import { AIScriptEngine } from "@/lib/ai-engine"
+
+interface AIResponse {
+  content?: string
+  error?: string
+}
+
+interface AIOptions {
+  provider?: "ollama" | "gemini" | "auto"
+  model?: string
+  maxTokens?: number
+  temperature?: number
+  timeout?: number
+}
+
+export interface AIStatus {
+  isLoading: boolean
+  error: Error | null
+  progress?: number
+}
 
 const defaultConfig = {
   maxTokens: 2000,
   temperature: 0.7,
-  model: "gpt-4",
+  model: "llama2",
+  timeout: 30000
 }
 
 export function useAIEngine(config = defaultConfig) {
-  const [loading, setLoading] = useState(false)
+  const engineRef = useRef<AIScriptEngine>(new AIScriptEngine(config))
+  const [status, setStatus] = useState<AIStatus>({ isLoading: false, error: null })
   const { toast } = useToast()
-  const engine = new AIScriptEngine(config)
 
-  const handleError = (error: any, action: string) => {
+  const handleError = (error: Error, action: string) => {
+    const errorMessage = error.message || `Failed to ${action}`
     console.error(`AI Engine ${action} error:`, error)
     toast({
       title: "Error",
-      description: `Failed to ${action}. Please try again.`,
+      description: errorMessage,
       variant: "destructive",
     })
-    setLoading(false)
+    setStatus(prev => ({ ...prev, error, isLoading: false }))
     throw error
   }
 
-  const generateScript = async (...args: Parameters<typeof engine.generateScript>) => {
+  const updateStatus = () => {
+    const engineStatus = engineRef.current.status
+    setStatus(engineStatus)
+    return engineStatus
+  }
+
+  const generateScript = async (
+    prompt: string,
+    options: AIOptions = {}
+  ): Promise<AIResponse> => {
     try {
-      setLoading(true)
-      const result = await engine.generateScript(...args)
-      setLoading(false)
-      return result
+      setStatus(prev => ({ ...prev, isLoading: true, error: null }))
+      
+      // Update engine config with any request-specific options
+      engineRef.current = new AIScriptEngine({
+        ...config,
+        ...options,
+      })
+
+      const result = await engineRef.current.generateScript({ prompt })
+      updateStatus()
+      return { content: result.content }
     } catch (error) {
-      handleError(error, "generate script")
+      if (error instanceof Error) {
+        handleError(error, "generate script")
+      }
+      throw error
     }
   }
 
-  const analyzeScript = async (...args: Parameters<typeof engine.analyzeScript>) => {
+  const analyzeScript = async (
+    content: string,
+    options: AIOptions = {}
+  ): Promise<AIResponse> => {
     try {
-      setLoading(true)
-      const result = await engine.analyzeScript(...args)
-      setLoading(false)
-      return result
+      setStatus(prev => ({ ...prev, isLoading: true, error: null }))
+
+      engineRef.current = new AIScriptEngine({
+        ...config,
+        ...options,
+      })
+
+      const result = await engineRef.current.analyzeScript({ content })
+      updateStatus()
+      return { content: result.analysis }
     } catch (error) {
-      handleError(error, "analyze script")
+      if (error instanceof Error) {
+        handleError(error, "analyze script")
+      }
+      throw error
     }
   }
 
-  const getSuggestions = async (...args: Parameters<typeof engine.getSuggestions>) => {
+  const generateCharacterBackground = async (
+    character: {
+      name: string
+      role?: string
+      description?: string
+      personality?: string
+      goals?: string
+    },
+    options: AIOptions = {}
+  ) => {
     try {
-      setLoading(true)
-      const result = await engine.getSuggestions(...args)
-      setLoading(false)
-      return result
+      setStatus(prev => ({ ...prev, isLoading: true, error: null }))
+
+      engineRef.current = new AIScriptEngine({
+        ...config,
+        ...options,
+      })
+
+      const result = await engineRef.current.generateCharacterBackground(character)
+      updateStatus()
+      return { content: result.background }
     } catch (error) {
-      handleError(error, "get suggestions")
+      if (error instanceof Error) {
+        handleError(error, "generate character background")
+      }
+      throw error
     }
   }
 
-  const improveSentiment = async (...args: Parameters<typeof engine.improveSentiment>) => {
+  const getSuggestions = async (
+    content: string,
+    targetAspect: string,
+    context?: string,
+    options: AIOptions = {}
+  ) => {
     try {
-      setLoading(true)
-      const result = await engine.improveSentiment(...args)
-      setLoading(false)
-      return result
+      setStatus(prev => ({ ...prev, isLoading: true, error: null }))
+
+      engineRef.current = new AIScriptEngine({
+        ...config,
+        ...options,
+      })
+
+      const result = await engineRef.current.getSuggestions({ content, targetAspect, context })
+      updateStatus()
+      return { content: result.suggestions }
     } catch (error) {
-      handleError(error, "improve sentiment")
+      if (error instanceof Error) {
+        handleError(error, "get suggestions")
+      }
+      throw error
     }
   }
 
-  const generateCharacterDialogue = async (...args: Parameters<typeof engine.generateCharacterDialogue>) => {
-    try {
-      setLoading(true)
-      const result = await engine.generateCharacterDialogue(...args)
-      setLoading(false)
-      return result
-    } catch (error) {
-      handleError(error, "generate dialogue")
-    }
-  }
-
-  const generateCharacterBackground = async (...args: Parameters<typeof engine.generateCharacterBackground>) => {
-    try {
-      setLoading(true)
-      const result = await engine.generateCharacterBackground(...args)
-      setLoading(false)
-      return result
-    } catch (error) {
-      handleError(error, "generate character background")
-    }
+  const reset = () => {
+    engineRef.current.reset()
+    updateStatus()
   }
 
   return {
-    loading,
+    status,
     generateScript,
     analyzeScript,
-    getSuggestions,
-    improveSentiment,
-    generateCharacterDialogue,
     generateCharacterBackground,
+    getSuggestions,
+    reset,
   }
 }

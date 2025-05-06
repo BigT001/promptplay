@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeftIcon } from "@/components/icons"
+import { useAIEngine } from "@/hooks/use-ai-engine"
 
 const categories = [
   "Novel",
@@ -30,6 +31,18 @@ export default function CreateProject() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
+  const { generateScript } = useAIEngine()
+
+  const generateInitialScript = async (title: string, category: string, description: string) => {
+    try {
+      const prompt = `Generate a ${category} script titled "${title}". Context: ${description}`;
+      const { content } = await generateScript(prompt);
+      return content;
+    } catch (error) {
+      console.error('Error generating script:', error);
+      throw error;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,34 +50,64 @@ export default function CreateProject() {
 
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
+    const title = formData.get("title") as string
+    const description = formData.get("description") as string
+    const category = formData.get("category") as string
     
     try {
-      const response = await fetch("/api/projects", {
+      // First create the project
+      const projectResponse = await fetch("/api/projects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: formData.get("title"),
-          description: formData.get("description"),
-          category: formData.get("category"),
+          title,
+          description,
+          category,
         }),
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to create project")
+      if (!projectResponse.ok) {
+        const errorData = await projectResponse.json()
+        throw new Error(errorData.error || "Failed to create project")
       }
 
-      const project = await response.json()
+      const { project } = await projectResponse.json()
+
+      if (!project?.id) {
+        throw new Error("Invalid project data received")
+      }
+
+      // Generate initial script content
+      const scriptContent = await generateInitialScript(title, category, description)
+
+      // Update project with generated content
+      const updateResponse = await fetch(`/api/projects/${project.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: scriptContent,
+        }),
+      })
+
+      if (!updateResponse.ok) {
+        throw new Error("Failed to update project with initial content")
+      }
+
       toast({
         title: "Success",
-        description: "Project created successfully",
+        description: "Project created with initial script generated",
       })
+      
       router.push(`/dashboard/projects/${project.id}`)
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Project creation error:", error)
       toast({
         title: "Error",
-        description: "Failed to create project. Please try again.",
+        description: error.message || "Failed to create project. Please try again.",
         variant: "destructive",
       })
     } finally {

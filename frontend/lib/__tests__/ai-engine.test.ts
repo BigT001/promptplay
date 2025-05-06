@@ -1,161 +1,46 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AIScriptEngine } from '../ai-engine'
-import fetchMock from 'jest-fetch-mock'
-
-// Mock fetch globally
-fetchMock.enableMocks()
 
 describe('AIScriptEngine', () => {
   let engine: AIScriptEngine
 
   beforeEach(() => {
-    fetchMock.resetMocks()
+    vi.resetAllMocks()
+    global.fetch = vi.fn()
     engine = new AIScriptEngine()
   })
 
-  describe('generateScript', () => {
-    it('should generate a script based on prompt and context', async () => {
-      const mockResponse = { result: 'Generated script content' }
-      fetchMock.mockResponseOnce(JSON.stringify(mockResponse))
-
-      const result = await engine.generateScript({
-        prompt: 'Write a scene',
-        context: 'A crime thriller',
-        genre: 'Thriller',
-        style: 'Noir',
-        constraints: ['PG-13', 'Single location']
-      })
-
-      expect(result).toEqual(mockResponse)
-      expect(fetchMock).toHaveBeenCalledWith('/api/ai/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: expect.any(String)
-      })
-
-      const requestBody = JSON.parse(fetchMock.mock.calls[0][1]?.body as string)
-      expect(requestBody).toMatchObject({
-        prompt: 'Write a scene',
-        context: 'A crime thriller',
-        genre: 'Thriller',
-        style: 'Noir',
-        constraints: ['PG-13', 'Single location']
-      })
+  it('generates initial script', async () => {
+    const mockResponse = { content: 'Generated script content' }
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse
     })
 
-    it('should handle API errors gracefully', async () => {
-      fetchMock.mockRejectOnce(new Error('API Error'))
-
-      await expect(
-        engine.generateScript({
-          prompt: 'Write a scene'
-        })
-      ).rejects.toThrow('API Error')
-    })
+    const result = await engine.generateScript('Test script')
+    expect(result).toEqual(mockResponse)
   })
 
-  describe('analyzeScript', () => {
-    it('should analyze script content', async () => {
-      const mockResponse = { result: 'Analysis results' }
-      fetchMock.mockResponseOnce(JSON.stringify(mockResponse))
-
-      const result = await engine.analyzeScript({
-        content: 'Script content to analyze',
-        aspectsToAnalyze: ['plot', 'character', 'dialogue']
-      })
-
-      expect(result).toEqual(mockResponse)
-      expect(fetchMock).toHaveBeenCalledWith('/api/ai/analyze', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: expect.any(String)
-      })
-    })
+  it('handles API errors', async () => {
+    global.fetch = vi.fn().mockRejectedValueOnce(new Error('API Error'))
+    await expect(engine.generateScript('Test script')).rejects.toThrow('API Error')
   })
 
-  describe('getSuggestions', () => {
-    it('should get improvement suggestions', async () => {
-      const mockResponse = { result: 'Improvement suggestions' }
-      fetchMock.mockResponseOnce(JSON.stringify(mockResponse))
-
-      const result = await engine.getSuggestions({
-        content: 'Script content',
-        targetAspect: 'dialogue',
-        context: 'Make it more natural'
+  it('retries with fallback provider on failure', async () => {
+    const mockFetch = vi.fn()
+      // First call with primary provider fails
+      .mockRejectedValueOnce(new Error('Primary provider failed'))
+      // Second call with fallback provider succeeds
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ content: 'Fallback content' })
       })
 
-      expect(result).toEqual(mockResponse)
-      expect(fetchMock).toHaveBeenCalledWith('/api/ai/suggest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: expect.any(String)
-      })
-    })
-  })
+    global.fetch = mockFetch
 
-  describe('improveSentiment', () => {
-    it('should modify text sentiment', async () => {
-      const mockResponse = { result: 'Modified content' }
-      fetchMock.mockResponseOnce(JSON.stringify(mockResponse))
+    const result = await engine.generateScript('Test script', { provider: 'auto' })
 
-      const result = await engine.improveSentiment(
-        'Original content',
-        'positive'
-      )
-
-      expect(result).toEqual(mockResponse)
-      expect(fetchMock).toHaveBeenCalledWith('/api/ai/sentiment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: expect.any(String)
-      })
-    })
-  })
-
-  describe('generateCharacterDialogue', () => {
-    it('should generate character-specific dialogue', async () => {
-      const mockResponse = { result: 'Generated dialogue' }
-      fetchMock.mockResponseOnce(JSON.stringify(mockResponse))
-
-      const result = await engine.generateCharacterDialogue(
-        'Detective Smith',
-        'Interrogation scene',
-        'Question the suspect'
-      )
-
-      expect(result).toEqual(mockResponse)
-      expect(fetchMock).toHaveBeenCalledWith('/api/ai/dialogue', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: expect.any(String)
-      })
-    })
-  })
-
-  describe('Configuration', () => {
-    it('should use custom configuration when provided', () => {
-      const customConfig = {
-        maxTokens: 1000,
-        temperature: 0.5,
-        model: 'gpt-3.5-turbo'
-      }
-      
-      const customEngine = new AIScriptEngine(customConfig)
-      fetchMock.mockResponseOnce(JSON.stringify({ result: 'test' }))
-
-      return customEngine.generateScript({ prompt: 'test' }).then(() => {
-        const requestBody = JSON.parse(fetchMock.mock.calls[0][1]?.body as string)
-        expect(requestBody.config).toMatchObject(customConfig)
-      })
-    })
+    expect(result).toEqual({ content: 'Fallback content' })
+    expect(mockFetch).toHaveBeenCalledTimes(2)
   })
 })

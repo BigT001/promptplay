@@ -14,14 +14,34 @@ interface Character {
   background?: string
 }
 
+interface CharacterStatus {
+  isLoading: boolean
+  error: Error | null
+  aiStatus?: {
+    isGenerating: boolean
+    error: Error | null
+  }
+}
+
 export function useCharacter(projectId: number) {
   const [characters, setCharacters] = useState<Character[]>([])
-  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<CharacterStatus>({
+    isLoading: false,
+    error: null,
+    aiStatus: {
+      isGenerating: false,
+      error: null
+    }
+  })
   const { toast } = useToast()
-  const ai = useAIEngine()
+  const { generateCharacterBackground, status: aiStatus } = useAIEngine()
+
+  const updateStatus = (update: Partial<CharacterStatus>) => {
+    setStatus(prev => ({ ...prev, ...update }))
+  }
 
   const fetchCharacters = useCallback(async () => {
-    setLoading(true)
+    updateStatus({ isLoading: true, error: null })
     try {
       const response = await fetch(`/api/projects/${projectId}/characters`)
       if (!response.ok) {
@@ -30,19 +50,21 @@ export function useCharacter(projectId: number) {
       const data = await response.json()
       setCharacters(data)
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to fetch characters"
+      updateStatus({ error: error as Error })
       toast({
         title: "Error",
-        description: "Failed to fetch characters",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {
-      setLoading(false)
+      updateStatus({ isLoading: false })
     }
   }, [projectId, toast])
 
   const createCharacter = useCallback(
     async (data: Omit<Character, "id">) => {
-      setLoading(true)
+      updateStatus({ isLoading: true, error: null })
       try {
         const response = await fetch(`/api/projects/${projectId}/characters`, {
           method: "POST",
@@ -51,7 +73,8 @@ export function useCharacter(projectId: number) {
         })
 
         if (!response.ok) {
-          throw new Error("Failed to create character")
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.message || "Failed to create character")
         }
 
         const newCharacter = await response.json()
@@ -61,15 +84,19 @@ export function useCharacter(projectId: number) {
           title: "Success",
           description: "Character created successfully",
         })
+
+        return newCharacter
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to create character"
+        updateStatus({ error: error as Error })
         toast({
           title: "Error",
-          description: "Failed to create character",
+          description: errorMessage,
           variant: "destructive",
         })
         throw error
       } finally {
-        setLoading(false)
+        updateStatus({ isLoading: false })
       }
     },
     [projectId, toast]
@@ -77,7 +104,7 @@ export function useCharacter(projectId: number) {
 
   const updateCharacter = useCallback(
     async (id: number, data: Partial<Character>) => {
-      setLoading(true)
+      updateStatus({ isLoading: true, error: null })
       try {
         const response = await fetch(`/api/projects/${projectId}/characters/${id}`, {
           method: "PUT",
@@ -86,7 +113,8 @@ export function useCharacter(projectId: number) {
         })
 
         if (!response.ok) {
-          throw new Error("Failed to update character")
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.message || "Failed to update character")
         }
 
         const updatedCharacter = await response.json()
@@ -96,15 +124,19 @@ export function useCharacter(projectId: number) {
           title: "Success",
           description: "Character updated successfully",
         })
+
+        return updatedCharacter
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to update character"
+        updateStatus({ error: error as Error })
         toast({
           title: "Error",
-          description: "Failed to update character",
+          description: errorMessage,
           variant: "destructive",
         })
         throw error
       } finally {
-        setLoading(false)
+        updateStatus({ isLoading: false })
       }
     },
     [projectId, toast]
@@ -112,67 +144,95 @@ export function useCharacter(projectId: number) {
 
   const deleteCharacter = useCallback(
     async (id: number) => {
-      setLoading(true)
+      updateStatus({ isLoading: true, error: null })
       try {
         const response = await fetch(`/api/projects/${projectId}/characters/${id}`, {
           method: "DELETE",
         })
 
         if (!response.ok) {
-          throw new Error("Failed to delete character")
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.message || "Failed to delete character")
         }
 
         setCharacters((prev) => prev.filter((c) => c.id !== id))
-
         toast({
           title: "Success",
           description: "Character deleted successfully",
         })
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to delete character"
+        updateStatus({ error: error as Error })
         toast({
           title: "Error",
-          description: "Failed to delete character",
+          description: errorMessage,
           variant: "destructive",
         })
         throw error
       } finally {
-        setLoading(false)
+        updateStatus({ isLoading: false })
       }
     },
     [projectId, toast]
   )
 
-  const generateCharacterBackground = useCallback(
+  const generateBackground = useCallback(
     async (character: Character) => {
-      setLoading(true)
+      updateStatus({
+        aiStatus: { isGenerating: true, error: null }
+      })
       try {
-        const result = await ai.generateCharacterBackground(character)
-        await updateCharacter(character.id, { background: result.background })
+        const result = await generateCharacterBackground({
+          name: character.name,
+          role: character.role,
+          description: character.description,
+          personality: character.personality,
+          goals: character.goals
+        })
+
+        if (result.content) {
+          await updateCharacter(character.id, {
+            background: result.content
+          })
+        }
 
         toast({
           title: "Success",
           description: "Character background generated successfully",
         })
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to generate background"
+        updateStatus({
+          aiStatus: { isGenerating: false, error: error as Error }
+        })
         toast({
           title: "Error",
-          description: "Failed to generate character background",
+          description: errorMessage,
           variant: "destructive",
         })
+        throw error
       } finally {
-        setLoading(false)
+        updateStatus({
+          aiStatus: { isGenerating: false, error: null }
+        })
       }
     },
-    [updateCharacter, ai, toast]
+    [generateCharacterBackground, updateCharacter, toast]
   )
 
   return {
     characters,
-    loading,
+    status: {
+      ...status,
+      aiStatus: {
+        ...status.aiStatus,
+        ...aiStatus
+      }
+    },
     fetchCharacters,
     createCharacter,
     updateCharacter,
     deleteCharacter,
-    generateCharacterBackground,
+    generateBackground
   }
 }
