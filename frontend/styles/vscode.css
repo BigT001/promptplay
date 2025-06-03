@@ -1,0 +1,82 @@
+/* VS Code component styles */
+.vscode-titlebar {
+  background-color: var(--vscode-titlebar-bg);
+  border-bottom: 1px solid var(--vscode-border);
+}
+
+.vscode-activity-bar {
+  background-color: var(--vscode-activity-bar-bg);
+  width: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-right: 1px solid var(--vscode-border);
+}
+
+.vscode-sidebar {
+  background-color: var(--vscode-sidebar-bg);
+  border-right: 1px solid var(--vscode-border);
+  overflow: hidden;
+  will-change: width;
+}
+
+.vscode-sidebar:not(.resizing) {
+  transition: width 200ms ease-out;
+}
+
+.vscode-sidebar .resize-handle {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.vscode-sidebar:hover .resize-handle,
+.vscode-sidebar.resizing .resize-handle {
+  opacity: 1;
+}
+
+.vscode-icon-button {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+  color: var(--vscode-text-muted);
+}
+
+.vscode-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--vscode-text);
+}
+
+.vscode-statusbar {
+  height: 1.5rem;
+  background-color: var(--vscode-titlebar-bg);
+  border-top: 1px solid var(--vscode-border);
+  font-size: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+/* Chat interface styles */
+.vscode-sidebar select {
+  color: var(--vscode-text);
+  background-color: transparent;
+  appearance: none;
+}
+
+.vscode-sidebar select:focus {
+  outline: none;
+  border: none;
+}
+
+.vscode-sidebar button {
+  color: var(--vscode-text);
+}
+
+.vscode-sidebar button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Context bar styles */
+.context-bar {
+  background-color: var(--vscode-titlebar-bg);
+  border-top: 1px solid var(--vscode-border);
+}
