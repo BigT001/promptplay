@@ -1,4 +1,4 @@
-"""Main script writing agent module."""
+"""Main script writing agent module with AI integration."""
 
 from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
@@ -7,6 +7,9 @@ from functools import lru_cache
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import time
+
+# Import AI model integration (you'll need to implement this)
+# from .ai_integration import AIModel
 
 from .tools import (
     create_plot,
@@ -25,134 +28,93 @@ executor = ThreadPoolExecutor(max_workers=4)
 
 # Define input/output schemas
 class ScriptRequest(BaseModel):
-    prompt: str = Field(..., description="The user's request or message")
-    parameters: Dict = Field(default_factory=dict, description="Optional parameters")
+    prompt: str = Field(..., description="User's creative prompt or story idea")
+    parameters: Dict = Field(default_factory=dict, description="Optional parameters for customization")
 
 class ScriptResponse(BaseModel):
     script: Dict
     status: str = "success"
     message: Optional[str] = None
+    content: Optional[str] = None  # For raw conversational responses
 
 @lru_cache(maxsize=100)
 def analyze_prompt(prompt: str) -> Dict:
-    """Analyze a natural language prompt to extract relevant information with caching.
+    """Uses AI to analyze the user's prompt and extract key story elements.
     
     Args:
-        prompt: The user's natural language request
+        prompt: The user's creative prompt
         
     Returns:
-        Dict containing extracted concept, genre (if any), and additional parameters
+        Dict containing AI-extracted story elements
     """
-    start_time = time.time()
-    logger.info(f"Starting prompt analysis for: {prompt[:100]}...")
-    
     try:
-        # Extract key information using NLP
-        concept = prompt  # Default behavior
-        genre = None
-        additional_params = {}
+        # Here you'll integrate your AI model to analyze the prompt
+        # Example: analysis = ai_model.analyze_prompt(prompt)
         
-        # Improved genre detection with weighted keywords
-        genre_keywords = {
-            "action": ["action", "fight", "battle", "adventure", "chase", "explosion"],
-            "drama": ["drama", "emotional", "relationship", "conflict", "personal"],
-            "comedy": ["comedy", "funny", "humor", "laugh", "hilarious"],
-            "horror": ["horror", "scary", "fear", "terrifying", "spooky"],
-            "sci-fi": ["sci-fi", "science fiction", "future", "space", "technology"],
-            "romance": ["romance", "love", "relationship", "romantic"],
-            "thriller": ["thriller", "suspense", "mystery", "tension"],
-            "fantasy": ["fantasy", "magic", "mythical", "dragon", "wizard"]
+        return {
+            "concept": prompt,
+            "genre": None,  # AI will determine if relevant
+            "themes": [],   # AI-extracted themes
+            "tone": "",    # AI-determined tone
+            "key_elements": []  # Important story elements
         }
-        
-        # Score each genre based on keyword matches
-        genre_scores = {genre: 0 for genre in genre_keywords}
-        prompt_lower = prompt.lower()
-        
-        for genre, keywords in genre_keywords.items():
-            for keyword in keywords:
-                if keyword in prompt_lower:
-                    genre_scores[genre] += 1
-        
-        # Select the genre with the highest score
-        if any(genre_scores.values()):
-            genre = max(genre_scores.items(), key=lambda x: x[1])[0]
-        else:
-            genre = "drama"  # Default genre
-        
-        # Extract additional parameters (tone, setting, etc.)
-        additional_params = {
-            "tone": "light" if genre in ["comedy", "romance"] else "serious",
-            "setting": "modern" if not any(k in prompt_lower for k in ["future", "past", "ancient"]) else "other"
-        }
-        
-        result = {
-            "concept": concept,
-            "genre": genre,
-            "additional_params": additional_params
-        }
-        
-        logger.info(f"Prompt analysis completed in {time.time() - start_time:.2f}s")
-        return result
-        
     except Exception as e:
-        logger.error(f"Error in prompt analysis: {str(e)}")
-        raise
+        logger.error(f"Error analyzing prompt: {str(e)}")
+        return {
+            "concept": prompt,
+            "error": str(e)
+        }
 
 async def generate_script_async(prompt: str, parameters: Dict = None) -> Dict:
-    """Generate a script asynchronously based on the user's prompt.
+    """Generates a complete script using AI-driven components.
     
     Args:
-        prompt: The user's natural language request
-        parameters: Optional parameters to customize generation
+        prompt: User's creative prompt
+        parameters: Optional customization parameters
         
     Returns:
-        Dict containing the generated script
+        Dict containing the AI-generated script
     """
     start_time = time.time()
-    logger.info(f"Starting script generation for prompt: {prompt[:100]}...")
+    logger.info(f"Starting AI script generation for: {prompt[:100]}...")
     
     try:
-        # Extract information from the prompt
+        # Extract story elements from prompt using AI
         request_info = analyze_prompt(prompt)
-        concept = request_info["concept"]
-        genre = request_info["genre"]
         
-        # Create tasks for parallel processing
-        loop = asyncio.get_event_loop()
-        tasks = [
-            loop.run_in_executor(executor, create_plot, concept, genre),
-            loop.run_in_executor(executor, create_characters, concept, genre)
-        ]
+        # Generate core elements in parallel
+        plot_task = create_plot(request_info["concept"])
+        characters_task = create_characters(request_info["concept"])
+        plot, characters = await asyncio.gather(plot_task, characters_task)
+          # Generate scenes based on plot and characters
+        scenes = await create_scenes(plot, characters)
         
-        # Wait for plot and characters
-        plot, characters = await asyncio.gather(*tasks)
+        # Generate dialogue and check continuity in parallel
+        dialogue_task = create_dialogue(scenes, characters)
+        continuity_task = check_continuity(plot, characters, scenes)
+        dialogue, continuity_notes = await asyncio.gather(dialogue_task, continuity_task)
         
-        # Create scenes (depends on plot and characters)
-        scenes = await loop.run_in_executor(
-            executor, create_scenes, plot, characters
-        )
+        generation_time = time.time() - start_time
+        logger.info(f"Script generation completed in {generation_time:.2f}s")
         
-        # Create dialogue and check continuity in parallel
-        tasks = [
-            loop.run_in_executor(executor, create_dialogue, scenes, characters),
-            loop.run_in_executor(executor, check_continuity, plot, characters, scenes)
-        ]
-        
-        dialogue, continuity_notes = await asyncio.gather(*tasks)
-        
+        # Combine all elements
         script = {
+            "prompt_analysis": request_info,
             "plot": plot,
             "characters": characters,
             "scenes": scenes,
             "dialogue": dialogue,
-            "continuity_notes": continuity_notes
+            "continuity_notes": continuity_notes,
+            "metadata": {
+                "generation_time": generation_time,
+                "ai_model_info": "Development mock response"
+            }
         }
         
-        logger.info(f"Script generation completed in {time.time() - start_time:.2f}s")
         return {
             "status": "success",
             "script": script,
-            "message": f"Script generated successfully in {time.time() - start_time:.2f}s"
+            "message": f"Script generated successfully in {generation_time:.2f}s"
         }
         
     except Exception as e:

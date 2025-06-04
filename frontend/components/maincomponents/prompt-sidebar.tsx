@@ -36,10 +36,11 @@ interface PromptSidebarProps {
 
 interface ScriptResponse {
   script: {
-    plot: any;
-    characters: any;
-    scenes: any;
-    continuity_notes: any;
+    response?: string;
+    plot?: any;
+    characters?: any;
+    scenes?: any;
+    continuity_notes?: any;
   };
   status: string;
   message?: string;
@@ -57,6 +58,12 @@ export function PromptSidebar({ isOpen, setIsOpen }: PromptSidebarProps) {
   });
 
   const formatScriptResponse = (script: ScriptResponse["script"]): string => {
+    // If it's a simple response (conversation mode)
+    if (script.response) {
+      return script.response;
+    }
+    
+    // Otherwise format as script (script generation mode)
     return `📝 Generated Script:
 
 ${script.plot ? `📌 PLOT:

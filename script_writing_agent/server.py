@@ -13,6 +13,7 @@ from script_writing_agent import (
     ScriptRequest,
     ScriptResponse
 )
+from script_writing_agent.ai_service import ai_service
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -51,15 +52,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/api/scripts/generate", response_model=ScriptResponse)
+@app.post("/api/scripts/generate")
 async def generate_script_endpoint(request: ScriptRequest, background_tasks: BackgroundTasks):
-    """Generate a script based on any type of user request."""
+    """Generate a response based on user request."""
     async with track_request() as request_id:
         try:
             logger.info(f"Request {request_id}: Received prompt: {request.prompt[:100]}...")
             start_time = time.time()
             
-            result = await generate_script_async(request.prompt, request.parameters)
+            # For conversational requests, use AI service directly
+            if not request.parameters or not request.parameters.get("request_type"):
+                result = await ai_service.generate_response(request.prompt)
+            else:
+                # For script generation, use the full pipeline
+                result = await generate_script_async(request.prompt, request.parameters)
             
             logger.info(f"Request {request_id}: Completed in {time.time() - start_time:.2f}s")
             
@@ -74,15 +80,27 @@ async def generate_script_endpoint(request: ScriptRequest, background_tasks: Bac
                     status_code=400,
                     detail=result.get("message", "Unknown error in script generation")
                 )
-                
+                  # Format response depending on request type
+            if not request.parameters or not request.parameters.get("request_type"):
+                # For conversational responses
+                return {
+                    "script": {
+                        "response": result.get("content", ""),
+                    },
+                    "status": result.get("status", "success"),
+                    "message": "Response generated successfully"
+                }
+            else:
+                # For script generation
+                response_data = {
+                    "script": result.get("script", {}),
+                    "status": "success",
+                    "message": result.get("message", "Script generated successfully")
+                }
+                return ScriptResponse(**response_data)
+
             # Add cleanup task
             background_tasks.add_task(cleanup_request_resources, request_id)
-            
-            return ScriptResponse(
-                script=result.get("script", {}),
-                status="success",
-                message=result.get("message")
-            )
             
         except Exception as e:
             logger.error(f"Request {request_id}: Error - {str(e)}")
